@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.currencyexchange.data.repository.ExchangeRateRepository
 import com.currencyexchange.model.CurrencyCode
-import com.currencyexchange.model.toCurrencyCodeOrNull
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
@@ -21,40 +20,31 @@ internal class CurrencyViewModel @Inject constructor(
     private val repository: ExchangeRateRepository,
 ) : ViewModel() {
 
-    var uiState by mutableStateOf(
-        CurrencyExchangeUiState(
-            sourceCurrency = CurrencyCode.USD_C,
-            targetCurrency = availableCurrencies.first(),
-            currencies = availableCurrencies,
-        )
-    )
+    var uiState by mutableStateOf(CurrencyExchangeUiState())
         private set
 
-    init {
-        loadInitialData()
-    }
+    init { loadInitialData() }
 
     private fun loadInitialData() {
         updateState { copy(overlay = Overlay.Loading) }
 
         viewModelScope.launch {
-            val currencies = repository.getAvailableCurrencies()
+            val requestedCurrencies = repository.getAvailableCurrencies()
 
-            repository.getExchangeRates(currencies)
+            repository.getExchangeRates(requestedCurrencies)
                 .onSuccess { rates ->
                     updateState {
                         copy(
                             overlay = null,
-                            currencies = currencies.mapNotNull { it.toCurrencyCodeOrNull() },
+                            currencies = requestedCurrencies,
                             exchangeRates = rates,
+                            targetCurrency = requestedCurrencies.firstOrNull()
                         )
                     }
                 }
                 .onFailure { _ ->
                     updateState {
-                        copy(
-                            overlay = Overlay.Error,
-                        )
+                        copy(overlay = Overlay.Error)
                     }
                 }
         }
@@ -64,7 +54,11 @@ internal class CurrencyViewModel @Inject constructor(
         get() {
             val rate = uiState.exchangeRate ?: return ""
             val formattedRate = formatNumber(rate)
-            return "1 ${uiState.sourceCurrency.apiCode} = $formattedRate ${uiState.targetCurrency?.apiCode}"
+            return EXCHANGE_RATE_TEMPLATE.format(
+                uiState.sourceCurrency.apiCode,
+                formattedRate,
+                uiState.targetCurrency?.apiCode
+            )
         }
 
     val currencyPickerItems: ImmutableList<CurrencyPickerItemState>
@@ -185,18 +179,13 @@ internal class CurrencyViewModel @Inject constructor(
 
     private fun formatNumber(value: Double): String {
         return NumberFormat.getNumberInstance(Locale.US).apply {
-            minimumFractionDigits = 2
-            maximumFractionDigits = 2
+            minimumFractionDigits = FRACTION_DIGITS
+            maximumFractionDigits = FRACTION_DIGITS
         }.format(value)
     }
 
-    companion object {
-        private val availableCurrencies = listOf(
-            CurrencyCode.MXN,
-            CurrencyCode.EUR,
-            CurrencyCode.BRL,
-            CurrencyCode.COP,
-            CurrencyCode.ARS,
-        )
+    private companion object {
+        const val FRACTION_DIGITS = 2
+        const val EXCHANGE_RATE_TEMPLATE = "1 %s = %s %s"
     }
 }

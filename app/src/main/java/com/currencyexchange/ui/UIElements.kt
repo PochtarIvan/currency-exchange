@@ -65,11 +65,11 @@ internal fun ActionCell(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Row(
-                modifier = Modifier.weight(1f),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                currencyCode?.let {
+            currencyCode?.let { code ->
+                Row(
+                    modifier = Modifier.weight(1f),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
                     Image(
                         modifier = Modifier
                             .padding(
@@ -77,23 +77,23 @@ internal fun ActionCell(
                                 end = 8.dp,
                             )
                             .size(16.dp),
-                        painter = painterResource(it.flagRes()),
+                        painter = painterResource(code.flagRes()),
                         contentDescription = null,
                     )
-                }
 
-                Text(
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.padding(end = 8.dp),
-                    text = currencyCode?.apiCode.orEmpty(),
-                    color = textColorDefault,
-                )
-
-                onShowCurrencyPicker?.let {
-                    Icon(
-                        contentDescription = null,
-                        painter = painterResource(R.drawable.ic_general_chevron_down),
+                    Text(
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.padding(end = 8.dp),
+                        text = currencyCode.apiCode,
+                        color = textColorDefault,
                     )
+
+                    onShowCurrencyPicker?.let {
+                        Icon(
+                            contentDescription = null,
+                            painter = painterResource(R.drawable.ic_general_chevron_down),
+                        )
+                    }
                 }
             }
 
@@ -171,7 +171,9 @@ internal fun LoadingOverlay() {
             .background(Color.Black.copy(alpha = 0.4f)),
         contentAlignment = Alignment.Center
     ) {
-        CircularProgressIndicator()
+        CircularProgressIndicator(
+            color = backgroundBrand,
+        )
     }
 }
 
