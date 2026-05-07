@@ -9,11 +9,13 @@ internal fun CurrencyExchangeData.toModelOrNull(): CurrencyExchangeModel? {
         .substringAfter("_")
         .uppercase()
         .toCurrencyCodeOrNull() ?: return null
+    val ask = ask.toDoubleOrNull() ?: return null
+    val bid = bid.toDoubleOrNull() ?: return null
 
     return CurrencyExchangeModel(
         currency = currencyCode,
-        ask = ask.toDouble(),
-        bid = bid.toDouble(),
+        ask = ask,
+        bid = bid,
         date = date,
     )
 }

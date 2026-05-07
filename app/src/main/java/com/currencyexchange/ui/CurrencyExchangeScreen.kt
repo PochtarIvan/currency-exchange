@@ -99,7 +99,6 @@ private fun ActionCellsSection(
         contentAlignment = Alignment.Center,
     ) {
         LazyColumn(
-            userScrollEnabled = false,
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             items(
