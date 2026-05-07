@@ -1,0 +1,13 @@
+<resources>
+    <!-- Common -->
+    <string name="app_name">Currency Exchange</string>
+
+    <!-- Exchange Screen -->
+    <string name="exchange_title">Currency Exchange</string>
+    <string name="exchange_amount_placeholder">0.00</string>
+
+    <!-- Overlays and modals -->
+    <string name="currency_picker_title">Choose Currency</string>
+    <string name="overlay_retry">Retry</string>
+    <string name="overlay_error_text">Something went wrong</string>
+</resources>
