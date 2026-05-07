@@ -53,11 +53,12 @@ internal class CurrencyViewModel @Inject constructor(
     val rateFormatted: String
         get() {
             val rate = uiState.exchangeRate ?: return ""
+            val targetCurrency = uiState.targetCurrency ?: return ""
             val formattedRate = formatNumber(rate)
             return EXCHANGE_RATE_TEMPLATE.format(
                 uiState.sourceCurrency.apiCode,
                 formattedRate,
-                uiState.targetCurrency?.apiCode
+                targetCurrency.apiCode
             )
         }
 
@@ -173,7 +174,7 @@ internal class CurrencyViewModel @Inject constructor(
 
     private fun findExchangeRate(currency: CurrencyCode?): Double? {
         return uiState.exchangeRates.firstOrNull {
-            it.currency == currency?.apiCode
+            it.currency == currency
         }?.exchangeRate
     }
 

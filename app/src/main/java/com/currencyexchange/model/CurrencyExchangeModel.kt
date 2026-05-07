@@ -4,7 +4,7 @@ import androidx.compose.runtime.Immutable
 
 @Immutable
 internal data class CurrencyExchangeModel(
-    val currency: String,
+    val currency: CurrencyCode?,
     val ask: Double,
     val bid: Double,
     val date: String,

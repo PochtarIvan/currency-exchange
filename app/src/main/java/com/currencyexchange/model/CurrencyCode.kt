@@ -4,7 +4,7 @@ internal enum class CurrencyCode(
     val apiCode: String,
     val symbol: String,
 ) {
-    USD_C("USDс", "$"),
+    USD_C("USDc", "$"),
     MXN("MXN", "$"),
     EUR("EUR", "€"),
     BRL("BRL", "R$"),

@@ -16,6 +16,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -168,6 +170,8 @@ internal fun LoadingOverlay() {
     Box(
         modifier = Modifier
             .fillMaxSize()
+            // INFO: The overlay consumes touch events to prevent clicks from passing through.
+            .clickable(onClick = {}, enabled = false)
             .background(Color.Black.copy(alpha = 0.4f)),
         contentAlignment = Alignment.Center
     ) {
@@ -182,7 +186,11 @@ internal fun ErrorOverlay(
     onRetryClick: () -> Unit,
 ) {
     Box(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            // INFO: The overlay consumes touch events to prevent clicks from passing through.
+            .clickable(onClick = {}, enabled = false)
+            .background(Color.Black.copy(alpha = 0.4f)),
         contentAlignment = Alignment.Center,
     ) {
         Column(
@@ -196,9 +204,12 @@ internal fun ErrorOverlay(
 
             Button(
                 onClick = onRetryClick,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = backgroundBrand,
+                )
             ) {
                 Text(
-                    text = stringResource(R.string.overlay_retry)
+                    text = stringResource(R.string.overlay_retry),
                 )
             }
         }

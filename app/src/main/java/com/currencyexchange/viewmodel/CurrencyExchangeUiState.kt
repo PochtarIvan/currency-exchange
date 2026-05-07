@@ -18,7 +18,7 @@ internal data class CurrencyExchangeUiState(
 ) {
     val exchangeRate: Double?
         get() = exchangeRates.firstOrNull {
-            it.currency == targetCurrency?.apiCode
+            it.currency == targetCurrency
         }?.exchangeRate
 }
 

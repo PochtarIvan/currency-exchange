@@ -3,7 +3,7 @@ package com.currencyexchange.data.repository
 import com.currencyexchange.data.remote.CurrencyExchangeData
 import com.currencyexchange.data.remote.ExchangeRateApi
 import com.currencyexchange.di.IoDispatcher
-import com.currencyexchange.mapper.toModel
+import com.currencyexchange.mapper.toModelOrNull
 import com.currencyexchange.model.CurrencyCode
 import com.currencyexchange.model.CurrencyExchangeModel
 import com.currencyexchange.model.toCurrencyCodeOrNull
@@ -30,7 +30,8 @@ internal class ExchangeRateRepositoryImpl @Inject constructor(
         runCatching {
             api.getTickers(
                 currencies.joinToString(",") { it.apiCode }
-            ).map(CurrencyExchangeData::toModel)
+            ).mapNotNull(CurrencyExchangeData::toModelOrNull)
+                .ifEmpty { error("No valid exchange rates") }
         }
     }
 
